@@ -14,7 +14,6 @@ function App() {
 					<img className="max-h-36" src="https://placehold.co/200x150" alt="flag" />
 					{/* info */}
 					<div>
-						<p className="font-bold text-center sm:text-left">Capital: <span className="font-normal">Grenada</span></p>
 						<p className="font-bold text-center sm:text-left">Capital: <span className="font-normal">St. George's</span></p>
 						<p className="font-bold text-center sm:text-left">Languages: <span className="font-normal">English</span></p>
 						<p className="font-bold text-center sm:text-left">Currency symbol: <span className="font-normal">$</span></p>
