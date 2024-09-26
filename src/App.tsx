@@ -1,7 +1,19 @@
+import { useEffect, useState } from "react";
+import useFetch from "./hooks/useFetch";
+import { ICountryData, isCountryDataList } from "./typings/types.d";
+
 function App() {
+	const { data, error, pending } = useFetch('https://restcountries.com/v3.1/independent');
+	const [countries, setCountries] = useState<Array<ICountryData>>([]);
+
+	useEffect(() => {
+		setCountries(isCountryDataList(data) ? data : []);
+	}, [data]);
+
   return (
 		// app
     <div>
+			{error && <p className="text-red-500">error: { error }</p>}
 			{/* title */}
 			<h1 className='text-3xl font-bold text-center py-5 text-gray-200'>Countries Quiz</h1>
 			{/* info window */}
