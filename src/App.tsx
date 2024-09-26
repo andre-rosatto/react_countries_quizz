@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import useFetch from "./hooks/useFetch";
 import { ICountry, isAPIDataList } from "./typings/types.d";
 
@@ -11,6 +11,8 @@ function App() {
 	const [guesses, setGuesses] = useState<Array<string>>([]);
 	const [guess, setGuess] = useState<string>('');
 	const [turn, setTurn] = useState<number>(0);
+
+	const remainingCountries = countries.filter(country => !guesses.includes(country.name));
 
 	useEffect(() => {
 		if (isAPIDataList(data)) {
@@ -32,9 +34,10 @@ function App() {
 		}
 	}, [data]);
 
-	const handleGuessClick = () => {
+	const handleGuessSubmit = (e: FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
 		setGuesses([...guesses, guess]);
-		if (guess !== countries[countryIdx].name) {
+		if (guess.toLowerCase() !== countries[countryIdx].name.toLowerCase()) {
 			setTurn(turn + 1);
 		}
 		setGuess('');
@@ -60,7 +63,7 @@ function App() {
 	}
 
 	const getWinStatus = (): '' | 'win' | 'lose' => {
-		if (guesses.at(-1) === countries[countryIdx].name) {
+		if (guesses.at(-1)?.toLowerCase() === countries[countryIdx].name.toLocaleLowerCase()) {
 			return 'win';
 		} else if (turn >= MAX_GUESSES) {
 			return 'lose';
@@ -134,11 +137,11 @@ function App() {
 					<p key={guess} className="text-gray-200 w-full px-2 border border-gray-200 flex items-center justify-center uppercase">
 						{guess}
 						{/* wrong guess */}
-						{guess !== countries[countryIdx].name && <svg className="size-5 ml-2 text-red-600" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+						{guess.toLowerCase() !== countries[countryIdx].name.toLowerCase() && <svg className="size-5 ml-2 text-red-600" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
 							<path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
 						</svg>}
 						{/* right guess */}
-						{guess === countries[countryIdx].name && <svg className="size-5 ml-2 text-green-600" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+						{guess.toLowerCase() === countries[countryIdx].name.toLowerCase() && <svg className="size-5 ml-2 text-green-600" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
 							<path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
 						</svg>}
 					</p>
@@ -146,17 +149,24 @@ function App() {
 				{/* guesses end */}
 
 				{/* input */}
-				{!getWinStatus() && <div className="flex max-w-full px-2 mt-2">
-					<select className="rounded-md mr-2 w-full" value={guess} onChange={e => setGuess(e.target.value)}>
+				{!getWinStatus() && <form className="flex max-w-full px-2 mt-2" onSubmit={handleGuessSubmit}>
+					<input
+						className="rounded-md mr-2 w-full pl-2"
+						type="text"
+						list="countries"
+						value={guess}
+						onChange={e => setGuess(e.target.value)}
+					/>
+					<datalist id="countries">
 						<option value=""></option>
-						{countries.filter(country => !guesses.includes(country.name)).map(country => <option value={country.name} key={country.name}>{country.name}</option>)}
-					</select>
+						{remainingCountries.map(country => <option value={country.name} key={country.name}>{country.name}</option>)}
+					</datalist>
 					<button
 						className="disabled:bg-gray-600 disabled:text-gray-500 disabled:cursor-not-allowed bg-green-600 rounded-md text-gray-200 px-4 py-2 font-bold uppercase cursor-pointer hover:bg-green-500 shadow-sm shadow-black active:bg-green-900 active:text-gray-400"
-						disabled={guess === ''}
-						onClick={handleGuessClick}
+						disabled={guess === '' || remainingCountries.filter(country => country.name.toLowerCase() === guess.toLowerCase()).length === 0 }
+						// onClick={handleGuessClick}
 					>Guess</button>
-				</div>}
+				</form>}
 				{/* end input */}
 			</div>}
 			{/* guesses container end */}
