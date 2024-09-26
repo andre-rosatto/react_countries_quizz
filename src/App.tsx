@@ -8,7 +8,8 @@ function App() {
 	const { data, error, pending } = useFetch('https://restcountries.com/v3.1/independent');
 	const [countries, setCountries] = useState<Array<ICountry>>([]);
 	const [countryIdx, setCountryIdx] = useState<number>(0);
-	const [guesses, setGuesses] = useState<Array<string>>(['a', 'b', 'c', 'd', 'e']);
+	const [guesses, setGuesses] = useState<Array<string>>([]);
+	const [guess, setGuess] = useState<string>('');
 
 	useEffect(() => {
 		if (isAPIDataList(data)) {
@@ -28,6 +29,10 @@ function App() {
 			setCountryIdx(Math.floor(Math.random() * data.length));
 		}
 	}, [data]);
+
+	const handleGuessClick = () => {
+		setGuesses([...guesses, guess]);
+	}
 
 	const getHearts = (): Array<JSX.Element> => {
 		return Array.from(Array(MAX_GUESSES - 1), (_, idx) => 
@@ -53,16 +58,26 @@ function App() {
 
   return (
 		// app
-    <div>
+    <>
 			{error && <p className="text-red-500">error: { error }</p>}
 			{pending && <p className="text-gray-200 text-center">Loading...</p>}
 
 			{/* info window */}
 			{!error && !pending && <div className="text-gray-200 flex flex-col items-center">
-				<h2 className="text-2xl font-bold text-center inline-block">Who am I?</h2>
-				<div className="p-4 flex flex-col max-w-2xl">
+				{/* title container*/}
+				<div className="flex gap-10 items-center mt-2 sm:mt-5 w-full justify-center relative max-w-sm">
+					<h1 className="text-2xl font-bold text-center">Who am I?</h1>
+					<button className="size-8 bg-red-700 rounded-md px-1 cursor-pointer hover:bg-red-600 absolute right-2">
+						<svg viewBox="0 0 24 24" fill="currentColor">
+							<path fillRule="evenodd" d="M4.755 10.059a7.5 7.5 0 0 1 12.548-3.364l1.903 1.903h-3.183a.75.75 0 1 0 0 1.5h4.992a.75.75 0 0 0 .75-.75V4.356a.75.75 0 0 0-1.5 0v3.18l-1.9-1.9A9 9 0 0 0 3.306 9.67a.75.75 0 1 0 1.45.388Zm15.408 3.352a.75.75 0 0 0-.919.53 7.5 7.5 0 0 1-12.548 3.364l-1.902-1.903h3.183a.75.75 0 0 0 0-1.5H2.984a.75.75 0 0 0-.75.75v4.992a.75.75 0 0 0 1.5 0v-3.18l1.9 1.9a9 9 0 0 0 15.059-4.035.75.75 0 0 0-.53-.918Z" clipRule="evenodd" />
+						</svg>
+					</button>
+				</div>
+				{/* title container end */}
+
+				<div className="flex flex-col max-w-2xl">
 					{/* info container */}
-					{countries.length > 0 && <div className="flex flex-row gap-4 p-2 sm:p-5">
+					{countries.length > 0 && <div className="flex flex-row gap-4 px-2 py-4">
 						{/* flag */}
 						<div className="w-28 h-28 sm:w-36 sm:h-36 p-2 flex flex-col justify-between sm:m-0 shadow-md shadow-black bg-gray-700 border border-white rounded-md">
 							<img className="aspect-square max-h-20 sm:max-h-24 object-contain" src={countries[countryIdx].flag} alt="flag" />
@@ -81,20 +96,27 @@ function App() {
 						</div>
 					</div>}
 					{/* info container end */}
-					{countries.length > 0 && getWinStatus() && <a className="underline text-center sm:text-left flex justify-center" href={countries[countryIdx].googleMaps} target="_blank" rel="noreferrer">
-						<svg className="size-6 mr-2" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-							<path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
-						</svg>
-						Show me on Google Maps
-					</a>}
+
+					{/* end game container */}
+					{countries.length > 0 && getWinStatus() && <div className="flex justify-center gap-2">
+						<p className="text-2xl font-bold uppercase">{countries[countryIdx].name}</p>
+						<a href={countries[countryIdx].googleMaps} target="_blank" rel="noopener noreferrer">
+							<svg className="size-8" viewBox="0 0 24 24" fill="currentColor">
+								<path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM6.262 6.072a8.25 8.25 0 1 0 10.562-.766 4.5 4.5 0 0 1-1.318 1.357L14.25 7.5l.165.33a.809.809 0 0 1-1.086 1.085l-.604-.302a1.125 1.125 0 0 0-1.298.21l-.132.131c-.439.44-.439 1.152 0 1.591l.296.296c.256.257.622.374.98.314l1.17-.195c.323-.054.654.036.905.245l1.33 1.108c.32.267.46.694.358 1.1a8.7 8.7 0 0 1-2.288 4.04l-.723.724a1.125 1.125 0 0 1-1.298.21l-.153-.076a1.125 1.125 0 0 1-.622-1.006v-1.089c0-.298-.119-.585-.33-.796l-1.347-1.347a1.125 1.125 0 0 1-.21-1.298L9.75 12l-1.64-1.64a6 6 0 0 1-1.676-3.257l-.172-1.03Z" clipRule="evenodd" />
+							</svg>
+						</a>
+					</div>}
+					{/* end game container end */}
 				</div>
 			</div>}
 			{/* info window end */}
 
-			{/* guesses */}
-			{countries.length > 0 && <div className="flex flex-col gap-1 items-center">
+			{/* guesses container */}
+			{countries.length > 0 && <div className="flex flex-col gap-1 items-center px-2 max-w-96 m-auto">
+				{/* guesses */}
 				{guesses.map(guess =>
-					<p key={guess} className="text-gray-200 w-60 border border-gray-200 flex items-center justify-center">{guess}
+					<p key={guess} className="text-gray-200 w-full px-2 border border-gray-200 flex items-center justify-center uppercase">
+						{guess}
 						{/* wrong guess */}
 						{guess !== countries[countryIdx].name && <svg className="size-5 ml-2 text-red-600" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
 							<path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -105,9 +127,24 @@ function App() {
 						</svg>}
 					</p>
 				)}
+				{/* guesses end */}
+
+				{/* input */}
+				{!getWinStatus() && <div className="flex max-w-full px-2 mt-2">
+					<select className="rounded-md mr-2 w-full" value={guess} onChange={e => setGuess(e.target.value)}>
+						<option value=""></option>
+						{countries.filter(country => !guesses.includes(country.name)).map(country => <option value={country.name} key={country.name}>{country.name}</option>)}
+					</select>
+					<button
+						className="disabled:bg-gray-600 disabled:text-gray-500 disabled:cursor-not-allowed bg-green-600 rounded-md text-gray-200 px-4 py-2 font-bold uppercase cursor-pointer hover:bg-green-500 shadow-sm shadow-black"
+						disabled={guess === ''}
+						onClick={handleGuessClick}
+					>Guess</button>
+				</div>}
+				{/* end input */}
 			</div>}
-			{/* guesses end */}
-    </div>
+			{/* guesses container end */}
+    </>
 		// app end
   );
 }
