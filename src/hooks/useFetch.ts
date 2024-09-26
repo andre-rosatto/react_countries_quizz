@@ -14,7 +14,7 @@ const useFetch = (url: string) => {
 				if (!res.ok) {
 					throw new Error('Error fetching countries data.');
 				}
-				res.json()
+				return res.json()
 			})
 			.then(data => {
 				setData(data);
