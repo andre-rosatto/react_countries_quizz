@@ -10,20 +10,22 @@ function App() {
 	const [countryIdx, setCountryIdx] = useState<number>(0);
 	const [guesses, setGuesses] = useState<Array<string>>([]);
 	const [guess, setGuess] = useState<string>('');
+	const [turn, setTurn] = useState<number>(0);
 
 	useEffect(() => {
 		if (isAPIDataList(data)) {
-			setCountries(data.map(d => {
+			const sorted = [...data].sort((a, b) => a.name.common < b.name.common ? -1 : 0);
+			setCountries(sorted.map(item => {
 				return {
-					name: d.name.common,
-					flag: d.flags.svg,
-					capital: d.capital,
-					languages: Object.entries(d.languages).map(lang => lang[1]).join(', '),
-					currency: Object.entries(d.currencies)[0][1].symbol,
-					population: d.population,
-					trafficSide: d.car.side,
-					continents: d.continents.join(', '),
-					googleMaps: d.maps.googleMaps
+					name: item.name.common,
+					flag: item.flags.svg,
+					capital: item.capital,
+					languages: Object.entries(item.languages).map(lang => lang[1]).join(', '),
+					currency: Object.entries(item.currencies)[0][1].symbol,
+					population: item.population,
+					trafficSide: item.car.side,
+					continents: item.continents.join(', '),
+					googleMaps: item.maps.googleMaps
 				}
 			}));
 			setCountryIdx(Math.floor(Math.random() * data.length));
@@ -32,11 +34,22 @@ function App() {
 
 	const handleGuessClick = () => {
 		setGuesses([...guesses, guess]);
+		if (guess !== countries[countryIdx].name) {
+			setTurn(turn + 1);
+		}
+		setGuess('');
+	}
+
+	const handleRestartClick = () => {
+		setGuesses([]);
+		setGuess('');
+		setCountryIdx(Math.floor(Math.random() * countries.length));
+		setTurn(0);
 	}
 
 	const getHearts = (): Array<JSX.Element> => {
 		return Array.from(Array(MAX_GUESSES - 1), (_, idx) => 
-			MAX_GUESSES - idx > guesses.length + 1
+			MAX_GUESSES - idx > turn + 1
 				? <svg key={idx} className="size-5 text-red-600" viewBox="0 0 24 24" fill="currentColor">
 						<path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
 					</svg>
@@ -49,7 +62,7 @@ function App() {
 	const getWinStatus = (): '' | 'win' | 'lose' => {
 		if (guesses.at(-1) === countries[countryIdx].name) {
 			return 'win';
-		} else if (guesses.length >= MAX_GUESSES) {
+		} else if (turn >= MAX_GUESSES) {
 			return 'lose';
 		} else {
 			return '';
@@ -67,7 +80,10 @@ function App() {
 				{/* title container*/}
 				<div className="flex gap-10 items-center mt-2 sm:mt-5 w-full justify-center relative max-w-sm">
 					<h1 className="text-2xl font-bold text-center">Who am I?</h1>
-					<button className="size-8 bg-red-700 rounded-md px-1 cursor-pointer hover:bg-red-600 absolute right-2">
+					<button
+						className="size-8 bg-red-700 rounded-md px-1 cursor-pointer hover:bg-red-600 absolute right-2 active:bg-red-900"
+						onClick={handleRestartClick}
+					>
 						<svg viewBox="0 0 24 24" fill="currentColor">
 							<path fillRule="evenodd" d="M4.755 10.059a7.5 7.5 0 0 1 12.548-3.364l1.903 1.903h-3.183a.75.75 0 1 0 0 1.5h4.992a.75.75 0 0 0 .75-.75V4.356a.75.75 0 0 0-1.5 0v3.18l-1.9-1.9A9 9 0 0 0 3.306 9.67a.75.75 0 1 0 1.45.388Zm15.408 3.352a.75.75 0 0 0-.919.53 7.5 7.5 0 0 1-12.548 3.364l-1.902-1.903h3.183a.75.75 0 0 0 0-1.5H2.984a.75.75 0 0 0-.75.75v4.992a.75.75 0 0 0 1.5 0v-3.18l1.9 1.9a9 9 0 0 0 15.059-4.035.75.75 0 0 0-.53-.918Z" clipRule="evenodd" />
 						</svg>
@@ -75,9 +91,9 @@ function App() {
 				</div>
 				{/* title container end */}
 
-				<div className="flex flex-col max-w-2xl">
+				<div className="flex flex-col w-full max-w-md">
 					{/* info container */}
-					{countries.length > 0 && <div className="flex flex-row gap-4 px-2 py-4">
+					{countries.length > 0 && <div className="flex flex-row gap-4 px-2 py-4 justify-center">
 						{/* flag */}
 						<div className="w-28 h-28 sm:w-36 sm:h-36 p-2 flex flex-col justify-between sm:m-0 shadow-md shadow-black bg-gray-700 border border-white rounded-md">
 							<img className="aspect-square max-h-20 sm:max-h-24 object-contain" src={countries[countryIdx].flag} alt="flag" />
@@ -89,16 +105,16 @@ function App() {
 						<div>
 							<p className="font-bold">Traffic side: <span className="font-normal capitalize">{ countries[countryIdx].trafficSide }</span></p>
 							<p className="font-bold">Currency symbol: <span className="font-normal">{ countries[countryIdx].currency }</span></p>
-							{guesses.length > MAX_GUESSES - 5 && <p className="font-bold ">Population: <span className="font-normal">{ countries[countryIdx].population.toString().replace(/\B(?<!\.\d)(?=(\d{3})+(?!\d))/g, ',') }</span></p>}
-							{guesses.length > MAX_GUESSES - 4 && <p className="font-bold ">Continents: <span className="font-normal">{ countries[countryIdx].continents }</span></p>}
-							{guesses.length > MAX_GUESSES - 3 && <p className="font-bold ">Languages: <span className="font-normal">{ countries[countryIdx].languages }</span></p>}
-							{guesses.length > MAX_GUESSES - 2 && <p className="font-bold ">Capital: <span className="font-normal">{ countries[countryIdx].capital }</span></p>}
+							{turn > 0 && <p className="font-bold ">Population: <span className="font-normal">{ countries[countryIdx].population.toString().replace(/\B(?<!\.\d)(?=(\d{3})+(?!\d))/g, ',') }</span></p>}
+							{turn > 1 && <p className="font-bold ">Continents: <span className="font-normal">{ countries[countryIdx].continents }</span></p>}
+							{turn > 2 && <p className="font-bold ">Languages: <span className="font-normal">{ countries[countryIdx].languages }</span></p>}
+							{turn > 3 && <p className="font-bold ">Capital: <span className="font-normal">{ countries[countryIdx].capital }</span></p>}
 						</div>
 					</div>}
 					{/* info container end */}
 
 					{/* end game container */}
-					{countries.length > 0 && getWinStatus() && <div className="flex justify-center gap-2">
+					{countries.length > 0 && getWinStatus() && <div className="flex justify-center gap-2 mb-4">
 						<p className="text-2xl font-bold uppercase">{countries[countryIdx].name}</p>
 						<a href={countries[countryIdx].googleMaps} target="_blank" rel="noopener noreferrer">
 							<svg className="size-8" viewBox="0 0 24 24" fill="currentColor">
@@ -136,7 +152,7 @@ function App() {
 						{countries.filter(country => !guesses.includes(country.name)).map(country => <option value={country.name} key={country.name}>{country.name}</option>)}
 					</select>
 					<button
-						className="disabled:bg-gray-600 disabled:text-gray-500 disabled:cursor-not-allowed bg-green-600 rounded-md text-gray-200 px-4 py-2 font-bold uppercase cursor-pointer hover:bg-green-500 shadow-sm shadow-black"
+						className="disabled:bg-gray-600 disabled:text-gray-500 disabled:cursor-not-allowed bg-green-600 rounded-md text-gray-200 px-4 py-2 font-bold uppercase cursor-pointer hover:bg-green-500 shadow-sm shadow-black active:bg-green-900 active:text-gray-400"
 						disabled={guess === ''}
 						onClick={handleGuessClick}
 					>Guess</button>
