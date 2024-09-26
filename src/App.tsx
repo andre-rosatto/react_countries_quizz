@@ -8,7 +8,7 @@ function App() {
 	const { data, error, pending } = useFetch('https://restcountries.com/v3.1/independent');
 	const [countries, setCountries] = useState<Array<ICountry>>([]);
 	const [countryIdx, setCountryIdx] = useState<number>(0);
-	const [guesses, setGuesses] = useState<Array<string>>(['Brazil', 'Canada', 'Germany']);
+	const [guesses, setGuesses] = useState<Array<string>>([]);
 
 	useEffect(() => {
 		if (isAPIDataList(data)) {
@@ -72,7 +72,7 @@ function App() {
 
 						{/* info */}
 						<div>
-							<p className="font-bold text-center sm:text-left">Traffic side: <span className="font-normal">{ countries[countryIdx].trafficSide }</span></p>
+							<p className="font-bold text-center sm:text-left">Traffic side: <span className="font-normal capitalize">{ countries[countryIdx].trafficSide }</span></p>
 							<p className="font-bold text-center sm:text-left">Currency symbol: <span className="font-normal">{ countries[countryIdx].currency }</span></p>
 							{guesses.length > MAX_GUESSES - 5 && <p className="font-bold text-center sm:text-left">Population: <span className="font-normal">{ countries[countryIdx].population.toString().replace(/\B(?<!\.\d)(?=(\d{3})+(?!\d))/g, ',') }</span></p>}
 							{guesses.length > MAX_GUESSES - 4 && <p className="font-bold text-center sm:text-left">Continents: <span className="font-normal">{ countries[countryIdx].continents }</span></p>}
