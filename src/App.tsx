@@ -8,7 +8,7 @@ function App() {
 	const { data, error, pending } = useFetch('https://restcountries.com/v3.1/independent');
 	const [countries, setCountries] = useState<Array<ICountry>>([]);
 	const [countryIdx, setCountryIdx] = useState<number>(0);
-	const [guesses, setGuesses] = useState<Array<string>>([]);
+	const [guesses, setGuesses] = useState<Array<string>>(['a', 'b', 'c', 'd', 'e']);
 
 	useEffect(() => {
 		if (isAPIDataList(data)) {
@@ -58,26 +58,26 @@ function App() {
 			{pending && <p className="text-gray-200 text-center">Loading...</p>}
 
 			{/* info window */}
-			{!error && !pending && <div>
-				<div className="p-2 sm:p-5 sm:rounded-md flex flex-col m-auto sm:max-w-lg text-gray-200">
-					<h2 className="text-2xl font-bold text-center inline-block">Who am I?</h2>
+			{!error && !pending && <div className="text-gray-200 flex flex-col items-center">
+				<h2 className="text-2xl font-bold text-center inline-block">Who am I?</h2>
+				<div className="p-4 flex flex-col max-w-2xl">
 					{/* info container */}
-					{countries.length > 0 && <div className="flex flex-col sm:flex-row gap-4 p-2 sm:p-5">
+					{countries.length > 0 && <div className="flex flex-row gap-4 p-2 sm:p-5">
 						{/* flag */}
-						<div className="w-36 h-36 p-2 flex flex-col justify-between mx-auto sm:m-0 shadow-md shadow-black bg-gray-700 border border-white rounded-md">
-							<img className="max-h-24 object-contain flex-auto" src={countries[countryIdx].flag} alt="flag" />
+						<div className="w-28 h-28 sm:w-36 sm:h-36 p-2 flex flex-col justify-between sm:m-0 shadow-md shadow-black bg-gray-700 border border-white rounded-md">
+							<img className="aspect-square max-h-20 sm:max-h-24 object-contain" src={countries[countryIdx].flag} alt="flag" />
 							<div className="flex bottom-0 left-0 w-full justify-center">{getHearts()}</div>
 						</div>
 						{/* flag end */}
 
 						{/* info */}
 						<div>
-							<p className="font-bold text-center sm:text-left">Traffic side: <span className="font-normal capitalize">{ countries[countryIdx].trafficSide }</span></p>
-							<p className="font-bold text-center sm:text-left">Currency symbol: <span className="font-normal">{ countries[countryIdx].currency }</span></p>
-							{guesses.length > MAX_GUESSES - 5 && <p className="font-bold text-center sm:text-left">Population: <span className="font-normal">{ countries[countryIdx].population.toString().replace(/\B(?<!\.\d)(?=(\d{3})+(?!\d))/g, ',') }</span></p>}
-							{guesses.length > MAX_GUESSES - 4 && <p className="font-bold text-center sm:text-left">Continents: <span className="font-normal">{ countries[countryIdx].continents }</span></p>}
-							{guesses.length > MAX_GUESSES - 3 && <p className="font-bold text-center sm:text-left">Languages: <span className="font-normal">{ countries[countryIdx].languages }</span></p>}
-							{guesses.length > MAX_GUESSES - 2 && <p className="font-bold text-center sm:text-left">Capital: <span className="font-normal">{ countries[countryIdx].capital }</span></p>}
+							<p className="font-bold">Traffic side: <span className="font-normal capitalize">{ countries[countryIdx].trafficSide }</span></p>
+							<p className="font-bold">Currency symbol: <span className="font-normal">{ countries[countryIdx].currency }</span></p>
+							{guesses.length > MAX_GUESSES - 5 && <p className="font-bold ">Population: <span className="font-normal">{ countries[countryIdx].population.toString().replace(/\B(?<!\.\d)(?=(\d{3})+(?!\d))/g, ',') }</span></p>}
+							{guesses.length > MAX_GUESSES - 4 && <p className="font-bold ">Continents: <span className="font-normal">{ countries[countryIdx].continents }</span></p>}
+							{guesses.length > MAX_GUESSES - 3 && <p className="font-bold ">Languages: <span className="font-normal">{ countries[countryIdx].languages }</span></p>}
+							{guesses.length > MAX_GUESSES - 2 && <p className="font-bold ">Capital: <span className="font-normal">{ countries[countryIdx].capital }</span></p>}
 						</div>
 					</div>}
 					{/* info container end */}
