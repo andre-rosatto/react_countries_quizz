@@ -6,10 +6,14 @@ export interface ICountry {
 	currency: string;
 	population: number;
 	trafficSide: string;
+	continents: string;
+	googleMaps: string;
 }
 
 export interface IAPIData {
-	name: string;
+	name: {
+		common: string;
+	};
 	capital: string;
 	languages: {
 		keys: string
@@ -25,6 +29,10 @@ export interface IAPIData {
 	};
 	flags: {
 		svg: string;
+	};
+	continents: Array<string>;
+	maps: {
+		googleMaps: string;
 	}
 }
 
@@ -37,6 +45,8 @@ export const isAPIData = (data: any): data is IAPIData => {
 		&& 'population' in data
 		&& 'car' in data
 		&& 'flags' in data
+		&& 'continents' in data
+		&& 'maps' in data
 	);
 }
 
