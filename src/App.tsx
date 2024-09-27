@@ -92,7 +92,7 @@ function App() {
 				{/* input */}
 				{countries.length > 0 && !getWinStatus() && <Input guess={guess} countryList={remainingCountries} onGuessSubmit={handleGuessSubmit} setGuess={setGuess} />}
 				
-				{getWinStatus() && <Confetti
+				{getWinStatus() === 'win' && <Confetti
 					count={50}
 					colors={['red', 'blue', 'cyan', 'green', 'yellow', 'white', 'pink', 'orange', 'purple']}
 				/>}
