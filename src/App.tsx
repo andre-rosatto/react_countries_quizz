@@ -6,6 +6,7 @@ import EndGame from "./components/EndGame";
 import GuessList from "./components/GuessList";
 import Input from "./components/Input";
 import TitleBar from "./components/TitleBar";
+import Confetti from "./components/Confetti";
 
 const MAX_GUESSES = 5;
 
@@ -92,7 +93,10 @@ function App() {
 			</main>}
 			{/* main section end */}
 
-			{/* <canvas className="border border-red-300 absolute top-0 left-0 w-full h-full pointer-events-none"></canvas> */}
+			{getWinStatus() === 'win' && <Confetti
+				count={50}
+				colors={['red', 'blue', 'cyan', 'green', 'yellow', 'white', 'pink', 'orange', 'purple']}
+			/>}
     </>
 		// app end
   );
