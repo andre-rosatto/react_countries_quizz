@@ -33,6 +33,7 @@ function App() {
 					population: item.population,
 					trafficSide: item.car.side,
 					continents: item.continents.join(', '),
+					region: item.subregion,
 					googleMaps: item.maps.googleMaps
 				}
 			}));

@@ -30,12 +30,13 @@ export default function Tips({maxGuesses, country, turn}: TipsProps) {
 
 			{/* info */}
 			<div>
-				<p className="font-bold">Traffic side: <span className="font-normal capitalize">{ country.trafficSide }</span></p>
+				<p className="font-bold">Population: <span className="font-normal">{ country.population.toString().replace(/\B(?<!\.\d)(?=(\d{3})+(?!\d))/g, ',') }</span></p>
 				<p className="font-bold">Currency symbol: <span className="font-normal">{ country.currency }</span></p>
-				{turn > 0 && <p className="font-bold ">Population: <span className="font-normal">{ country.population.toString().replace(/\B(?<!\.\d)(?=(\d{3})+(?!\d))/g, ',') }</span></p>}
-				{turn > 1 && <p className="font-bold ">Continents: <span className="font-normal">{ country.continents }</span></p>}
-				{turn > 2 && <p className="font-bold ">Languages: <span className="font-normal">{ country.languages }</span></p>}
-				{turn > 3 && <p className="font-bold ">Capital: <span className="font-normal">{ country.capital }</span></p>}
+				<p className="font-bold">Traffic side: <span className="font-normal capitalize">{ country.trafficSide }</span></p>
+				{turn > 0 && <p className="font-bold">Continents: <span className="font-normal">{ country.continents }</span></p>}
+				{turn > 1 && <p className="font-bold">Region: <span className="font-normal">{ country.region }</span></p>}
+				{turn > 2 && <p className="font-bold">Languages: <span className="font-normal">{ country.languages }</span></p>}
+				{turn > 3 && <p className="font-bold">Capital: <span className="font-normal">{ country.capital }</span></p>}
 			</div>
 		</div>
 	);

@@ -7,6 +7,7 @@ export interface ICountry {
 	population: number;
 	trafficSide: string;
 	continents: string;
+	region: string;
 	googleMaps: string;
 }
 
@@ -31,6 +32,7 @@ export interface IAPIData {
 		svg: string;
 	};
 	continents: Array<string>;
+	subregion: string;
 	maps: {
 		googleMaps: string;
 	}
@@ -46,6 +48,7 @@ export const isAPIData = (data: any): data is IAPIData => {
 		&& 'car' in data
 		&& 'flags' in data
 		&& 'continents' in data
+		&& 'subregion' in data
 		&& 'maps' in data
 	);
 }
