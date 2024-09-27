@@ -35,27 +35,18 @@ export default function Confetti({count, colors}: ConfettiProps) {
 	));
 
 	useEffect(() => {
+		// confetti animation
 		const updateConfetti = () => {
 			if (!canvas.current || !isCanvas(canvas.current)) return;
 			const ctx = canvas.current.getContext('2d');
 			if (!ctx) return;
 
-			if (canvas.current.width !== window.innerWidth) {
-				canvas.current.width = window.innerWidth;
-			}
-			if (canvas.current.height !== window.innerHeight) {
-				canvas.current.height = window.innerHeight;
-			}
-
-			const canvasWidth = canvas.current.width;
-			const canvasHeight = canvas.current.height;
-
-			ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+			ctx.clearRect(0, 0, canvas.current.width, canvas.current.height);
 
 			confetti.current.forEach(c => {
 				c.x += c.speedX;
-				if (c.y > canvasHeight) {
-					c.x = Math.random() * window.innerWidth;
+				if (c.y > canvas.current!.height) {
+					c.x = Math.random() * canvas.current!.width;
 					c.y = Math.random() * -5;
 					c.speedR = (Math.random() - 0.5) / 20;
 				} else {
@@ -72,6 +63,17 @@ export default function Confetti({count, colors}: ConfettiProps) {
 			requestAnimationFrame(updateConfetti);
 		}
 		requestAnimationFrame(updateConfetti);
+
+		// resize event
+		const handleResize = () => {
+			if (canvas.current) {
+				canvas.current.width = window.innerWidth;
+				canvas.current.height = window.innerHeight;
+			}
+		}
+		handleResize();
+		window.addEventListener('resize', handleResize);
+		return () => window.removeEventListener('resize', handleResize);
 	}, [canvas]);
 
 	const isCanvas = (el: any): el is HTMLCanvasElement => 'getContext' in el;

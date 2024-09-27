@@ -57,6 +57,7 @@ function App() {
 	}
 
 	const getWinStatus = (): '' | 'win' | 'lose' => {
+		if (countries.length === 0) return '';
 		if (guesses.at(-1)?.toLowerCase() === countries[countryIdx].name.toLocaleLowerCase()) {
 			return 'win';
 		} else if (turn >= MAX_GUESSES) {
@@ -90,13 +91,14 @@ function App() {
 
 				{/* input */}
 				{countries.length > 0 && !getWinStatus() && <Input guess={guess} countryList={remainingCountries} onGuessSubmit={handleGuessSubmit} setGuess={setGuess} />}
+				
+				{<Confetti
+					count={50}
+					colors={['red', 'blue', 'cyan', 'green', 'yellow', 'white', 'pink', 'orange', 'purple']}
+				/>}
 			</main>}
 			{/* main section end */}
 
-			{getWinStatus() === 'win' && <Confetti
-				count={50}
-				colors={['red', 'blue', 'cyan', 'green', 'yellow', 'white', 'pink', 'orange', 'purple']}
-			/>}
     </>
 		// app end
   );
