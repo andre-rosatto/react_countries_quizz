@@ -92,6 +92,7 @@ function App() {
 			</main>}
 			{/* main section end */}
 
+			{/* <canvas className="border border-red-300 absolute top-0 left-0 w-full h-full pointer-events-none"></canvas> */}
     </>
 		// app end
   );
