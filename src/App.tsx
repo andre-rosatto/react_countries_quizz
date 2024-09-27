@@ -68,11 +68,13 @@ function App() {
   return (
 		// app
     <>
+			{/* error and fetching messages */}
 			{error && <p className="text-red-500">error: { error }</p>}
 			{pending && <p className="text-gray-200 text-center">Loading...</p>}
 
-			{/* info window */}
-			{!error && !pending && <div className="text-gray-200 flex flex-col items-center">
+			{/* main section */}
+			{!error && !pending && <main className="text-gray-200 flex flex-col items-center px-2 max-w-md m-auto">
+
 				{/* title bar*/}
 				<TitleBar onRestartClick={handleRestartClick} />
 
@@ -81,14 +83,15 @@ function App() {
 					<Tips maxGuesses={MAX_GUESSES} country={countries[countryIdx]} turn={turn} />
 					{getWinStatus() && <EndGame country={countries[countryIdx]} />}
 				</div>}
-			</div>}
-			{/* info window end */}
 
-			{/* guesses container */}
-			{countries.length > 0 && <GuessList guesses={guesses} country={countries[countryIdx]} />}
+				{/* guesses container */}
+				{countries.length > 0 && <GuessList guesses={guesses} country={countries[countryIdx]} />}
 
-			{/* input */}
-			{countries.length > 0 && !getWinStatus() && <Input guess={guess} countryList={remainingCountries} onGuessSubmit={handleGuessSubmit} setGuess={setGuess} />}
+				{/* input */}
+				{countries.length > 0 && !getWinStatus() && <Input guess={guess} countryList={remainingCountries} onGuessSubmit={handleGuessSubmit} setGuess={setGuess} />}
+			</main>}
+			{/* main section end */}
+
     </>
 		// app end
   );

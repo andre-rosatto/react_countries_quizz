@@ -20,7 +20,7 @@ export default function Tips({maxGuesses, country, turn}: TipsProps) {
 	}
 
 	return (
-		<div className="flex flex-row gap-4 px-2 py-4 justify-center">
+		<div className="flex flex-row gap-4 py-4 justify-center">
 			{/* flag */}
 			<div className="w-28 h-28 sm:w-36 sm:h-36 p-2 flex flex-col justify-between sm:m-0 shadow-md shadow-black bg-gray-700 border border-white rounded-md">
 				<img className="aspect-square max-h-20 sm:max-h-24 object-contain" src={country.flag} alt="flag" />

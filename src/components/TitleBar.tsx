@@ -7,7 +7,7 @@ export default function TitleBar({onRestartClick}: TitleBarProps) {
 		<div className="flex gap-10 items-center mt-2 sm:mt-5 w-full justify-center relative max-w-sm">
 			<h1 className="text-2xl font-bold text-center">Who am I?</h1>
 			<button
-				className="size-8 bg-red-700 rounded-md px-1 cursor-pointer hover:bg-red-600 absolute right-2 active:bg-red-900"
+				className="size-8 bg-red-700 rounded-md px-1 cursor-pointer hover:bg-red-600 absolute right-0 active:bg-red-900"
 				onClick={onRestartClick}
 			>
 				<svg viewBox="0 0 24 24" fill="currentColor">

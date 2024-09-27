@@ -10,9 +10,9 @@ interface InputProps {
 
 export default function Input ({guess, countryList, onGuessSubmit, setGuess}: InputProps) {
 	return (
-		<form className="flex max-w-full px-2 mt-2" onSubmit={onGuessSubmit}>
+		<form className="flex w-full mt-4" onSubmit={onGuessSubmit}>
 			<input
-				className="rounded-md mr-2 w-full pl-2"
+				className="rounded-md mr-2 w-full pl-2 text-gray-900"
 				type="text"
 				list="countries"
 				value={guess}

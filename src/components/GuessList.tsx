@@ -7,7 +7,7 @@ interface GuessListProps {
 
 export default function GuessList({guesses, country}: GuessListProps) {
 	return (
-		<div className="flex flex-col gap-1 items-center px-2 max-w-96 m-auto">
+		<div className="flex flex-col gap-1 items-center m-auto">
 			{guesses.map(guess =>
 				<p key={guess} className="text-gray-200 w-full px-2 border border-gray-200 flex items-center justify-center uppercase">
 					{guess}
