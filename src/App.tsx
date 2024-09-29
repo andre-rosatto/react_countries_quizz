@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { ICountry, isAPIDataList } from "./typings/types.d";
 import Tips from "./components/Tips";
 import EndGame from "./components/EndGame";
@@ -11,16 +11,17 @@ const MAX_GUESSES = 5;
 
 function App() {
 	const [error, setError] = useState<null | string>(null);
-	const [countries, setCountries] = useState<Array<ICountry>>([]);
+	const countries = useRef<Array<ICountry>>([]);
 	const [countryIdx, setCountryIdx] = useState<number>(-1);
 	const [guesses, setGuesses] = useState<Array<string>>([]);
 	const [guess, setGuess] = useState<string>('');
 	const [turn, setTurn] = useState<number>(0);
 
-	const remainingCountries = countries.filter(country => !guesses.includes(country.name));
+	const remainingCountries = countries.current.filter(country => !guesses.includes(country.name));
 
 	useEffect(() => {
 		setError(null);
+		countries.current = [];
 		fetch('https://restcountries.com/v3.1/independent')
 			.then(res => {
 				if (!res.ok) {
@@ -31,7 +32,7 @@ function App() {
 			.then(data => {
 				if (isAPIDataList(data)) {
 					const sorted = [...data].sort((a, b) => a.name.common < b.name.common ? -1 : 0);
-					setCountries(sorted.map(item => {
+					countries.current = sorted.map(item => {
 						return {
 							name: item.name.common,
 							flag: item.flags.svg,
@@ -44,7 +45,7 @@ function App() {
 							region: item.subregion,
 							googleMaps: item.maps.googleMaps
 						}
-					}));
+					});
 					setCountryIdx(Math.floor(Math.random() * data.length));
 				}
 			})
@@ -56,7 +57,7 @@ function App() {
 	const handleGuessSubmit = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		setGuesses([...guesses, guess]);
-		if (guess.toLowerCase() !== countries[countryIdx].name.toLowerCase()) {
+		if (guess.toLowerCase() !== countries.current[countryIdx].name.toLowerCase()) {
 			setTurn(turn + 1);
 		}
 		setGuess('');
@@ -65,13 +66,13 @@ function App() {
 	const handleRestartClick = () => {
 		setGuesses([]);
 		setGuess('');
-		setCountryIdx(Math.floor(Math.random() * countries.length));
+		setCountryIdx(Math.floor(Math.random() * countries.current.length));
 		setTurn(0);
 	}
 
 	const getWinStatus = (): '' | 'win' | 'lose' => {
-		if (countries.length === 0) return '';
-		if (guesses.at(-1)?.toLowerCase() === countries[countryIdx].name.toLocaleLowerCase()) {
+		if (countries.current.length === 0) return '';
+		if (guesses.at(-1)?.toLowerCase() === countries.current[countryIdx].name.toLocaleLowerCase()) {
 			return 'win';
 		} else if (turn >= MAX_GUESSES) {
 			return 'lose';
@@ -94,16 +95,16 @@ function App() {
 				<TitleBar onRestartClick={handleRestartClick} />
 
 				{/* info container */}
-				{countries.length > 0 && <div className="flex flex-col w-full max-w-md">
-					<Tips maxGuesses={MAX_GUESSES} country={countries[countryIdx]} turn={turn} />
-					{getWinStatus() && <EndGame country={countries[countryIdx]} />}
+				{countryIdx >= 0 && <div className="flex flex-col w-full max-w-md">
+					<Tips maxGuesses={MAX_GUESSES} country={countries.current[countryIdx]} turn={turn} />
+					{getWinStatus() && <EndGame country={countries.current[countryIdx]} />}
 				</div>}
 
 				{/* guesses container */}
-				{countries.length > 0 && <GuessList guesses={guesses} country={countries[countryIdx]} />}
+				{countryIdx >= 0 && <GuessList guesses={guesses} country={countries.current[countryIdx]} />}
 
 				{/* input */}
-				{countries.length > 0 && !getWinStatus() && <Input guess={guess} countryList={remainingCountries} onGuessSubmit={handleGuessSubmit} setGuess={setGuess} />}
+				{countryIdx >= 0 && !getWinStatus() && <Input guess={guess} countryList={remainingCountries} onGuessSubmit={handleGuessSubmit} setGuess={setGuess} />}
 				
 				{getWinStatus() === 'win' && <Confetti
 					count={50}
