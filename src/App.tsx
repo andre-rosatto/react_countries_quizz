@@ -1,5 +1,4 @@
 import { FormEvent, useEffect, useState } from "react";
-import useFetch from "./hooks/useFetch";
 import { ICountry, isAPIDataList } from "./typings/types.d";
 import Tips from "./components/Tips";
 import EndGame from "./components/EndGame";
@@ -11,9 +10,9 @@ import Confetti from "./components/Confetti";
 const MAX_GUESSES = 5;
 
 function App() {
-	const { data, error, pending } = useFetch('https://restcountries.com/v3.1/independent');
+	const [error, setError] = useState<null | string>(null);
 	const [countries, setCountries] = useState<Array<ICountry>>([]);
-	const [countryIdx, setCountryIdx] = useState<number>(0);
+	const [countryIdx, setCountryIdx] = useState<number>(-1);
 	const [guesses, setGuesses] = useState<Array<string>>([]);
 	const [guess, setGuess] = useState<string>('');
 	const [turn, setTurn] = useState<number>(0);
@@ -21,25 +20,38 @@ function App() {
 	const remainingCountries = countries.filter(country => !guesses.includes(country.name));
 
 	useEffect(() => {
-		if (isAPIDataList(data)) {
-			const sorted = [...data].sort((a, b) => a.name.common < b.name.common ? -1 : 0);
-			setCountries(sorted.map(item => {
-				return {
-					name: item.name.common,
-					flag: item.flags.svg,
-					capital: item.capital,
-					languages: Object.entries(item.languages).map(lang => lang[1]).join(', '),
-					currency: Object.entries(item.currencies)[0][1].symbol,
-					population: item.population,
-					trafficSide: item.car.side,
-					continents: item.continents.join(', '),
-					region: item.subregion,
-					googleMaps: item.maps.googleMaps
+		setError(null);
+		fetch('https://restcountries.com/v3.1/independent')
+			.then(res => {
+				if (!res.ok) {
+					throw new Error('Error fetching countries data.');
 				}
-			}));
-			setCountryIdx(Math.floor(Math.random() * data.length));
-		}
-	}, [data]);
+				return res.json()
+			})
+			.then(data => {
+				if (isAPIDataList(data)) {
+					const sorted = [...data].sort((a, b) => a.name.common < b.name.common ? -1 : 0);
+					setCountries(sorted.map(item => {
+						return {
+							name: item.name.common,
+							flag: item.flags.svg,
+							capital: item.capital,
+							languages: Object.entries(item.languages).map(lang => lang[1]).join(', '),
+							currency: Object.entries(item.currencies)[0][1].symbol,
+							population: item.population,
+							trafficSide: item.car.side,
+							continents: item.continents.join(', '),
+							region: item.subregion,
+							googleMaps: item.maps.googleMaps
+						}
+					}));
+					setCountryIdx(Math.floor(Math.random() * data.length));
+				}
+			})
+			.catch(err => {
+				setError(err.message);
+			});
+	}, []);
 
 	const handleGuessSubmit = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -73,10 +85,10 @@ function App() {
     <>
 			{/* error and fetching messages */}
 			{error && <p className="text-red-500">error: { error }</p>}
-			{pending && <p className="text-gray-200 text-center">Loading...</p>}
+			{!error && countryIdx === -1 && <p className="text-gray-200 text-center">Loading...</p>}
 
 			{/* main section */}
-			{!error && !pending && <main className="text-gray-200 flex flex-col items-center px-2 max-w-md m-auto">
+			{countryIdx >=0 && <main className="text-gray-200 flex flex-col items-center px-2 max-w-md m-auto">
 
 				{/* title bar*/}
 				<TitleBar onRestartClick={handleRestartClick} />
