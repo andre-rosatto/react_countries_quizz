@@ -26,18 +26,17 @@ export default function Tips({maxGuesses, country, turn}: TipsProps) {
 				<img className="aspect-square max-h-20 sm:max-h-24 object-contain" src={country.flag} alt="flag" />
 				<div className="flex bottom-0 left-0 w-full justify-center">{getHearts()}</div>
 			</div>
-			{/* flag end */}
 
 			{/* info */}
-			<div>
-				<p className="font-bold">Population: <span className="font-normal">{ country.population.toString().replace(/\B(?<!\.\d)(?=(\d{3})+(?!\d))/g, ',') }</span></p>
-				<p className="font-bold">Currency symbol: <span className="font-normal">{ country.currency }</span></p>
-				<p className="font-bold">Traffic side: <span className="font-normal capitalize">{ country.trafficSide }</span></p>
-				{turn > 0 && <p className="font-bold">Continent: <span className="font-normal">{ country.continents }</span></p>}
-				{turn > 1 && <p className="font-bold">Region: <span className="font-normal">{ country.region }</span></p>}
-				{turn > 2 && <p className="font-bold">Languages: <span className="font-normal">{ country.languages }</span></p>}
-				{turn > 3 && <p className="font-bold">Capital: <span className="font-normal">{ country.capital }</span></p>}
-			</div>
+			<ul>
+				<li className="font-bold">Population: <span className="font-normal">{ country.population.toString().replace(/\B(?<!\.\d)(?=(\d{3})+(?!\d))/g, ',') }</span></li>
+				<li className="font-bold">Currency symbol: <span className="font-normal">{ country.currency }</span></li>
+				<li className="font-bold">Traffic side: <span className="font-normal capitalize">{ country.trafficSide }</span></li>
+				{turn > 0 && <li className="font-bold">Continent: <span className="font-normal">{ country.continents }</span></li>}
+				{turn > 1 && <li className="font-bold">Region: <span className="font-normal">{ country.region }</span></li>}
+				{turn > 2 && <li className="font-bold">Languages: <span className="font-normal">{ country.languages }</span></li>}
+				{turn > 3 && <li className="font-bold">Capital: <span className="font-normal">{ country.capital }</span></li>}
+			</ul>
 		</div>
 	);
 }
