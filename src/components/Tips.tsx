@@ -3,10 +3,11 @@ import { ICountry } from "../typings/types";
 interface TipsProps {
 	maxGuesses: number,
 	country: ICountry,
-	turn: number
+	turn: number,
+	showAll: boolean
 }
 
-export default function Tips({maxGuesses, country, turn}: TipsProps) {
+export default function Tips({maxGuesses, country, turn, showAll}: TipsProps) {
 	const getHearts = (): Array<JSX.Element> => {
 		return Array.from(Array(maxGuesses - 1), (_, idx) => 
 			maxGuesses - idx > turn + 1
@@ -32,10 +33,10 @@ export default function Tips({maxGuesses, country, turn}: TipsProps) {
 				<li className="font-bold">Population: <span className="font-normal">{ country.population.toString().replace(/\B(?<!\.\d)(?=(\d{3})+(?!\d))/g, ',') }</span></li>
 				<li className="font-bold">Currency symbol: <span className="font-normal">{ country.currency }</span></li>
 				<li className="font-bold">Traffic side: <span className="font-normal capitalize">{ country.trafficSide }</span></li>
-				{turn > 0 && <li className="font-bold">Continent: <span className="font-normal">{ country.continents }</span></li>}
-				{turn > 1 && <li className="font-bold">Region: <span className="font-normal">{ country.region }</span></li>}
-				{turn > 2 && <li className="font-bold">Languages: <span className="font-normal">{ country.languages }</span></li>}
-				{turn > 3 && <li className="font-bold">Capital: <span className="font-normal">{ country.capital }</span></li>}
+				{(turn > 0 || showAll) && <li className="font-bold">Continent: <span className="font-normal">{ country.continents }</span></li>}
+				{(turn > 1 || showAll) && <li className="font-bold">Region: <span className="font-normal">{ country.region }</span></li>}
+				{(turn > 2 || showAll) && <li className="font-bold">Languages: <span className="font-normal">{ country.languages }</span></li>}
+				{(turn > 3 || showAll) && <li className="font-bold">Capital: <span className="font-normal">{ country.capital }</span></li>}
 			</ul>
 		</div>
 	);

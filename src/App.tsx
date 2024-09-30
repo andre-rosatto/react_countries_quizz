@@ -96,7 +96,7 @@ function App() {
 
 				{/* info container */}
 				{countryIdx >= 0 && <div className="flex flex-col w-full max-w-md">
-					<Tips maxGuesses={MAX_GUESSES} country={countries.current[countryIdx]} turn={turn} />
+					<Tips maxGuesses={MAX_GUESSES} country={countries.current[countryIdx]} turn={turn} showAll={getWinStatus() !== ''} />
 					{getWinStatus() && <EndGame country={countries.current[countryIdx]} />}
 				</div>}
 
