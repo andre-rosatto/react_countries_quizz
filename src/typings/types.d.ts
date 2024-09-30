@@ -38,7 +38,7 @@ export interface IAPIData {
 	}
 }
 
-export const isAPIData = (data: any): data is IAPIData => {
+export const isAPIData = (data: unknown): data is IAPIData => {
 	return (
 		'name' in data
 		&& 'capital' in data
@@ -53,6 +53,6 @@ export const isAPIData = (data: any): data is IAPIData => {
 	);
 }
 
-export const isAPIDataList = (data: any): data is Array<IAPIData> => {
+export const isAPIDataList = (data: unknown): data is Array<IAPIData> => {
 	return Array.isArray(data) && data.length > 0 && isAPIData(data[0]);
 }
