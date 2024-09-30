@@ -38,7 +38,7 @@ export default function Input ({guess, countryList, onGuessSubmit, setGuess}: In
 				{countryList.filter(country => country.name.toLowerCase().includes(guess.toLowerCase())).map(country =>
 					<li
 						key={country.name}
-						className="px-2 border border-gray-200 rounded-full cursor-pointer hover:bg-green-900"
+						className="px-2 border border-gray-200 rounded-full cursor-pointer hover:bg-green-900 text-nowrap inline-block"
 						onClick={() => handleSuggestionClick(country.name)}
 					>{country.name}</li>
 				)}
